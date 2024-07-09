@@ -10,6 +10,8 @@ import SwiftUI
 struct RangeSlider: View {
     @Binding var lowerValue: Double
     @Binding var upperValue: Double
+    @State private var filledStart: Double = 50
+    @State private var filledWidth: Double = 100
     
     var body: some View {
         RoundedRectangle(cornerRadius: 4)
@@ -18,11 +20,15 @@ struct RangeSlider: View {
             .overlay {
                 ZStack {
                     RangeSliderFilledTrack()
-                        .frame(width: 100)
-                        .position(CGPoint(x: 50.0, y: 2.0))
-                    RangeSliderHandle()
+                        .frame(width: filledWidth)
+                        .position(CGPoint(x: filledStart, y: 2.0))
+                    RangeSliderHandle(onChanged: { changed in
+                        
+                    })
                         .position(CGPoint(x: 0.0, y: 2.0))
-                    RangeSliderHandle()
+                    RangeSliderHandle(onChanged: { changed in
+                        
+                    })
                         .position(CGPoint(x: 100.0, y: 2.0))
                 }
             }
@@ -45,6 +51,8 @@ struct RangeSliderHandle: View {
     private let darkDefault = Color.gray
     private let darkPressed = Color(red: 174/255, green: 174/255, blue: 174/255)
     
+    var onChanged: (Double) -> Void
+    
     var body: some View {
         Circle()
             .fill(colorScheme == .dark ? (isPressed ? darkPressed : darkDefault) : (isPressed ? lightPressed : lightDefault))
@@ -52,8 +60,9 @@ struct RangeSliderHandle: View {
             .shadow(radius: 1, y: 0.5)
             .gesture(
                 DragGesture(minimumDistance: 0)
-                    .onChanged { _ in
+                    .onChanged { value in
                         isPressed = true
+                        onChanged(value.location.x - value.startLocation.x)
                     }
                     .onEnded { _ in
                         isPressed = false
@@ -69,6 +78,8 @@ struct RangeSliderHandle: View {
 }
 
 #Preview {
-    RangeSliderHandle()
+    RangeSliderHandle(onChanged: { changed in
+        print(changed)
+    })
         .padding()
 }
