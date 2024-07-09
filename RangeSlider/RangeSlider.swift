@@ -18,18 +18,20 @@ struct RangeSlider: View {
             .fill(Color.gray.opacity(0.2))
             .frame(height: 4)
             .overlay {
-                ZStack {
-                    RangeSliderFilledTrack()
-                        .frame(width: filledWidth)
-                        .position(CGPoint(x: filledStart, y: 2.0))
-                    RangeSliderHandle(onChanged: { changed in
-                        
-                    })
+                GeometryReader { geometry in
+                    ZStack {
+                        RangeSliderFilledTrack()
+                            .frame(width: geometry.size.width)
+                            .position(CGPoint(x: geometry.size.width / 2, y: 2.0))
+                        RangeSliderHandle(onChanged: { changed in
+                            
+                        })
                         .position(CGPoint(x: 0.0, y: 2.0))
-                    RangeSliderHandle(onChanged: { changed in
-                        
-                    })
-                        .position(CGPoint(x: 100.0, y: 2.0))
+                        RangeSliderHandle(onChanged: { changed in
+                            
+                        })
+                        .position(CGPoint(x: geometry.size.width, y: 2.0))
+                    }
                 }
             }
     }
