@@ -10,8 +10,12 @@ import SwiftUI
 struct RangeSlider: View {
     @Binding var lowerValue: Double
     @Binding var upperValue: Double
-    @State private var filledStart: Double = 50
-    @State private var filledWidth: Double = 100
+    @State private var filledStart: Double = 0
+    @State private var filledWidth: Double = 1.0
+    @State private var lowerLast: Double = 0.0
+    @State private var upperLast: Double = 1.0
+    @State private var lowerCurrent: Double = 0.0
+    @State private var upperCurrent: Double = 1.0
     
     var body: some View {
         RoundedRectangle(cornerRadius: 4)
@@ -21,16 +25,38 @@ struct RangeSlider: View {
                 GeometryReader { geometry in
                     ZStack {
                         RangeSliderFilledTrack()
-                            .frame(width: geometry.size.width)
-                            .position(CGPoint(x: geometry.size.width / 2, y: 2.0))
-                        RangeSliderHandle(onChanged: { changed in
-                            
-                        })
-                        .position(CGPoint(x: 0.0, y: 2.0))
-                        RangeSliderHandle(onChanged: { changed in
-                            
-                        })
-                        .position(CGPoint(x: geometry.size.width, y: 2.0))
+                            .frame(width: geometry.size.width * filledWidth)
+                            .position(CGPoint(x: geometry.size.width * filledWidth / 2, y: 2.0))
+                        RangeSliderHandle()
+                            .position(CGPoint(x: lowerCurrent * geometry.size.width, y: 2.0))
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { value in
+                                        let delta = value.translation.width / geometry.size.width
+                                        lowerCurrent = min(max(lowerLast + delta, 0), upperLast)
+                                    }
+                                    .onEnded { value in
+                                        let delta = value.translation.width / geometry.size.width
+                                        lowerCurrent = min(max(lowerLast + delta, 0), upperLast)
+                                        lowerLast = lowerCurrent
+                                    }
+                            )
+                        
+                        RangeSliderHandle()
+                            .position(CGPoint(x: upperCurrent * geometry.size.width, y: 2.0))
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { value in
+                                        let delta = value.translation.width / geometry.size.width
+                                        upperCurrent = min(max(upperLast + delta, lowerLast), 1)
+                                        
+                                    }
+                                    .onEnded { value in
+                                        let delta = value.translation.width / geometry.size.width
+                                        upperCurrent = min(max(upperLast + delta, lowerLast), 1)
+                                        upperLast = upperCurrent
+                                    }
+                            )
                     }
                 }
             }
@@ -53,35 +79,17 @@ struct RangeSliderHandle: View {
     private let darkDefault = Color.gray
     private let darkPressed = Color(red: 174/255, green: 174/255, blue: 174/255)
     
-    var onChanged: (Double) -> Void
-    
     var body: some View {
         Circle()
             .fill(colorScheme == .dark ? (isPressed ? darkPressed : darkDefault) : (isPressed ? lightPressed : lightDefault))
             .frame(width: 20, height: 20)
             .shadow(radius: 1, y: 0.5)
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        isPressed = true
-                        onChanged(value.location.x - value.startLocation.x)
-                    }
-                    .onEnded { _ in
-                        isPressed = false
-                    }
-            )
+        
     }
 }
 
 #Preview {
     RangeSlider(lowerValue: .constant(0.0), upperValue: .constant(5.0))
         .frame(width: 300)
-        .padding()
-}
-
-#Preview {
-    RangeSliderHandle(onChanged: { changed in
-        print(changed)
-    })
         .padding()
 }
