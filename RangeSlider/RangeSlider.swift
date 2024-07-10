@@ -25,8 +25,8 @@ struct RangeSlider: View {
                 GeometryReader { geometry in
                     ZStack {
                         RangeSliderFilledTrack()
-                            .frame(width: geometry.size.width * filledWidth)
-                            .position(CGPoint(x: geometry.size.width * filledWidth / 2, y: 2.0))
+                            .frame(width: geometry.size.width * (upperCurrent - lowerCurrent))
+                            .position(CGPoint(x: (upperCurrent + lowerCurrent) / 2 * geometry.size.width, y: 2.0))
                         RangeSliderHandle()
                             .position(CGPoint(x: lowerCurrent * geometry.size.width, y: 2.0))
                             .gesture(
