@@ -10,12 +10,10 @@ import SwiftUI
 struct RangeSlider: View {
     @Binding var lowerValue: Double
     @Binding var upperValue: Double
-    @State private var filledStart: Double = 0
-    @State private var filledWidth: Double = 1.0
     @State private var lowerLast: Double = 0.0
     @State private var upperLast: Double = 1.0
-    @State private var lowerCurrent: Double = 0.0
-    @State private var upperCurrent: Double = 1.0
+//    @State private var lowerCurrent: Double = 0.0
+//    @State private var upperCurrent: Double = 1.0
     
     var body: some View {
         RoundedRectangle(cornerRadius: 4)
@@ -25,36 +23,36 @@ struct RangeSlider: View {
                 GeometryReader { geometry in
                     ZStack {
                         RangeSliderFilledTrack()
-                            .frame(width: geometry.size.width * (upperCurrent - lowerCurrent))
-                            .position(CGPoint(x: (upperCurrent + lowerCurrent) / 2 * geometry.size.width, y: 2.0))
+                            .frame(width: geometry.size.width * (upperValue - lowerValue))
+                            .position(CGPoint(x: (upperValue + lowerValue) / 2 * geometry.size.width, y: 2.0))
                         RangeSliderHandle()
-                            .position(CGPoint(x: lowerCurrent * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: lowerValue * geometry.size.width, y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
                                         let delta = value.translation.width / geometry.size.width
-                                        lowerCurrent = min(max(lowerLast + delta, 0), upperLast)
+                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
                                     }
                                     .onEnded { value in
                                         let delta = value.translation.width / geometry.size.width
-                                        lowerCurrent = min(max(lowerLast + delta, 0), upperLast)
-                                        lowerLast = lowerCurrent
+                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
+                                        lowerLast = lowerValue
                                     }
                             )
                         
                         RangeSliderHandle()
-                            .position(CGPoint(x: upperCurrent * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: upperValue * geometry.size.width, y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
                                         let delta = value.translation.width / geometry.size.width
-                                        upperCurrent = min(max(upperLast + delta, lowerLast), 1)
+                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
                                         
                                     }
                                     .onEnded { value in
                                         let delta = value.translation.width / geometry.size.width
-                                        upperCurrent = min(max(upperLast + delta, lowerLast), 1)
-                                        upperLast = upperCurrent
+                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
+                                        upperLast = upperValue
                                     }
                             )
                     }
@@ -89,7 +87,7 @@ struct RangeSliderHandle: View {
 }
 
 #Preview {
-    RangeSlider(lowerValue: .constant(0.0), upperValue: .constant(5.0))
+    RangeSlider(lowerValue: .constant(0.0), upperValue: .constant(1.0))
         .frame(width: 300)
         .padding()
 }
