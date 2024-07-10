@@ -12,8 +12,6 @@ struct RangeSlider: View {
     @Binding var upperValue: Double
     @State private var lowerLast: Double = 0.0
     @State private var upperLast: Double = 1.0
-//    @State private var lowerCurrent: Double = 0.0
-//    @State private var upperCurrent: Double = 1.0
     
     var body: some View {
         RoundedRectangle(cornerRadius: 4)
