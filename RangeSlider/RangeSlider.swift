@@ -12,6 +12,7 @@ struct RangeSlider: View {
     @Binding var upperValue: Double
     @State private var lowerLast: Double = 0.0
     @State private var upperLast: Double = 1.0
+    @State private var updating: Bool = false
     
     var body: some View {
         RoundedRectangle(cornerRadius: 4)
@@ -28,6 +29,7 @@ struct RangeSlider: View {
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
+                                        updating = true
                                         let delta = value.translation.width / geometry.size.width
                                         lowerValue = min(max(lowerLast + delta, 0), upperLast)
                                     }
@@ -35,24 +37,36 @@ struct RangeSlider: View {
                                         let delta = value.translation.width / geometry.size.width
                                         lowerValue = min(max(lowerLast + delta, 0), upperLast)
                                         lowerLast = lowerValue
+                                        updating = false
                                     }
                             )
+                            .onChange(of: lowerValue) { _, newValue in
+                                if !updating {
+                                    lowerLast = newValue
+                                }
+                            }
                         
                         RangeSliderHandle()
                             .position(CGPoint(x: upperValue * geometry.size.width, y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
+                                        updating = true
                                         let delta = value.translation.width / geometry.size.width
                                         upperValue = min(max(upperLast + delta, lowerLast), 1)
-                                        
                                     }
                                     .onEnded { value in
                                         let delta = value.translation.width / geometry.size.width
                                         upperValue = min(max(upperLast + delta, lowerLast), 1)
                                         upperLast = upperValue
+                                        updating = false
                                     }
                             )
+                            .onChange(of: upperValue) { _, newValue in
+                                if !updating {
+                                    upperLast = newValue
+                                }
+                            }
                     }
                 }
             }
