@@ -13,8 +13,18 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Lower Value: \(lowerValue)")
-            Text("Upper Value: \(upperValue)")
+            HStack {
+                Text("Lower Value: \(lowerValue)")
+                Button("Reset") {
+                    lowerValue = 0.0
+                }
+            }
+            HStack {
+                Text("Upper Value: \(upperValue)")
+                Button("Reset") {
+                    upperValue = 1.0
+                }
+            }
             RangeSlider(lowerValue: $lowerValue, upperValue: $upperValue)
                 .frame(width: 400)
                 .onChange(of: lowerValue) { _, newValue in
