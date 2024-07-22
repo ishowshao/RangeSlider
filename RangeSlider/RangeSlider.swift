@@ -23,19 +23,23 @@ struct RangeSlider: View {
                     ZStack {
                         RangeSliderFilledTrack()
                             .frame(width: geometry.size.width * (upperValue - lowerValue))
-                            .position(CGPoint(x: (upperValue + lowerValue) / 2 * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: (upperValue + lowerValue) / 2 * (geometry.size.width - 2 * RangeSliderHandle.size) + RangeSliderHandle.size, y: 2.0))
                         RangeSliderHandle()
-                            .position(CGPoint(x: RangeSliderHandle.size / 2 + lowerValue * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: RangeSliderHandle.size / 2 + lowerValue * (geometry.size.width - 2 * RangeSliderHandle.size), y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
+                                        let x = RangeSliderHandle.size
                                         updating = true
-                                        let delta = value.translation.width / geometry.size.width
-                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
+//                                        let delta = value.translation.width / geometry.size.width
+//                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
+                                        lowerValue = min(max(lowerLast + value.translation.width / (geometry.size.width - 2 * x), 0), upperLast)
                                     }
                                     .onEnded { value in
-                                        let delta = value.translation.width / geometry.size.width
-                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
+//                                        let delta = value.translation.width / geometry.size.width
+//                                        lowerValue = min(max(lowerLast + delta, 0), upperLast)
+                                        let x = RangeSliderHandle.size
+                                        lowerValue = min(max(lowerLast + value.translation.width / (geometry.size.width - 2 * x), 0), upperLast)
                                         lowerLast = lowerValue
                                         updating = false
                                     }
@@ -47,17 +51,24 @@ struct RangeSlider: View {
                             }
                         
                         RangeSliderHandle()
-                            .position(CGPoint(x: -(RangeSliderHandle.size / 2) +  upperValue * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: 3.0 * RangeSliderHandle.size / 2.0 +  upperValue * (geometry.size.width - 2 * RangeSliderHandle.size), y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
                                         updating = true
-                                        let delta = value.translation.width / geometry.size.width
-                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
+//                                        let delta = value.translation.width / geometry.size.width
+//                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
+                                        
+                                        let x = RangeSliderHandle.size
+                                        upperValue = min(max(upperLast + value.translation.width / (geometry.size.width - 2 * x), lowerLast), 1)
                                     }
                                     .onEnded { value in
-                                        let delta = value.translation.width / geometry.size.width
-                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
+//                                        let delta = value.translation.width / geometry.size.width
+//                                        upperValue = min(max(upperLast + delta, lowerLast), 1)
+                                        
+                                        let x = RangeSliderHandle.size
+                                        upperValue = min(max(upperLast + value.translation.width / (geometry.size.width - 2 * x), lowerLast), 1)
+                                        
                                         upperLast = upperValue
                                         updating = false
                                     }
