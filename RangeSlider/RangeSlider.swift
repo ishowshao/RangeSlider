@@ -25,7 +25,7 @@ struct RangeSlider: View {
                             .frame(width: geometry.size.width * (upperValue - lowerValue))
                             .position(CGPoint(x: (upperValue + lowerValue) / 2 * geometry.size.width, y: 2.0))
                         RangeSliderHandle()
-                            .position(CGPoint(x: lowerValue * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: RangeSliderHandle.size / 2 + lowerValue * geometry.size.width, y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
@@ -47,7 +47,7 @@ struct RangeSlider: View {
                             }
                         
                         RangeSliderHandle()
-                            .position(CGPoint(x: upperValue * geometry.size.width, y: 2.0))
+                            .position(CGPoint(x: -(RangeSliderHandle.size / 2) +  upperValue * geometry.size.width, y: 2.0))
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { value in
@@ -88,11 +88,12 @@ struct RangeSliderHandle: View {
     private let lightPressed = Color(red: 240/255, green: 240/255, blue: 240/255)
     private let darkDefault = Color.gray
     private let darkPressed = Color(red: 174/255, green: 174/255, blue: 174/255)
+    static let size: CGFloat = 20
     
     var body: some View {
         Circle()
             .fill(colorScheme == .dark ? (isPressed ? darkPressed : darkDefault) : (isPressed ? lightPressed : lightDefault))
-            .frame(width: 20, height: 20)
+            .frame(width: Self.size, height: Self.size)
             .shadow(radius: 1, y: 0.5)
         
     }
