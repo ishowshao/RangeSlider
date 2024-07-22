@@ -25,6 +25,7 @@ struct ContentView: View {
                     upperValue = 1.0
                 }
             }
+            Spacer().frame(height: 20)
             RangeSlider(lowerValue: $lowerValue, upperValue: $upperValue)
                 .frame(width: 400)
                 .onChange(of: lowerValue) { _, newValue in
